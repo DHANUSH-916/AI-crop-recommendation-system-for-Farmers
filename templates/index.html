@@ -784,6 +784,20 @@ return value + "%";
 
 {% endif %}
 
+{% if result %}
+<script>
+window.onload = function () {
+    const resultCard = document.querySelector(".result-card");
+    if (resultCard) {
+        resultCard.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+};
+</script>
+{% endif %}
+
 </body>
 
 </html>
