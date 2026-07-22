@@ -470,10 +470,9 @@ Prediction Chart
 #predictionChart{
 
     width:100%;
-
-    height:420px;
-
-    margin-top:30px;
+    max-width:600px;
+    height:260px;
+    margin:20px auto;
 
 }
 
@@ -865,5 +864,19 @@ Selection
     background:var(--primary);
 
     color:#fff;
+
+}
+.chart-container{
+
+    max-width:600px;
+    height:300px;
+    margin:30px auto;
+
+}
+
+#predictionChart{
+
+    width:100% !important;
+    height:100% !important;
 
 }
