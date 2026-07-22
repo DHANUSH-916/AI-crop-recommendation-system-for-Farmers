@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Crop Recommendation</title>
+
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            transition: background 0.3s, color 0.3s;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Card */
+        .card-custom {
+            max-width: 450px;
+            margin: auto;
+            margin-top: 40px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+            border-radius: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Dark Mode */
+        .dark-mode {
+            background: #121212 !important;
+            color: #ffffff;
+        }
+
+        .dark-mode .card {
+            background: #1e1e1e;
+            color: white;
+        }
+
+        .dark-mode input,
+        .dark-mode .list-group-item {
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+        }
+
+        /* Crop Image */
+        .crop-img {
+            display: block;
+            margin: 15px auto;
+            max-width: 220px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        /* Background Themes */
+        .farm-bg {
+            background: linear-gradient(to top, #fffde7, #ffeb3b);
+        }
+
+        .veg-bg {
+            background: linear-gradient(to top, #fff3e0, #ffe0b2);
+        }
+
+        .wet-bg {
+            background: linear-gradient(to top, #90caf9, #e3f2fd);
+        }
+
+        /* ☁️ Clouds */
+        .cloud {
+            position: fixed;
+            background: #ffffff;
+            border-radius: 50%;
+            opacity: 0.9;
+            animation: moveClouds 80s linear infinite;
+            z-index: 1;
+        }
+        .cloud::before,
+        .cloud::after {
+            content: "";
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+        .cloud::before { width: 60%; height: 60%; top: -30%; left: 10%; }
+        .cloud::after { width: 70%; height: 70%; top: -40%; right: 10%; }
+
+        @keyframes moveClouds {
+            from { transform: translateX(-200px); }
+            to { transform: translateX(120vw); }
+        }
+
+        /* 🌧️ Rain */
+        .rain {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: repeating-linear-gradient(
+                to bottom,
+                rgba(255,255,255,0.6),
+                rgba(255,255,255,0.6) 2px,
+                transparent 4px,
+                transparent 10px
+            );
+            animation: rainFall 0.4s linear infinite;
+            display: none;
+            z-index: 1;
+        }
+
+        @keyframes rainFall {
+            from { background-position: 0 0; }
+            to { background-position: 0 120px; }
+        }
+
+        /* ☀️ Sun */
+        .sun {
+            position: fixed;
+            top: 60px;
+            right: 80px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #ffeb3b, #fbc02d);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(255,193,7,0.8);
+            animation: rotateSun 20s linear infinite;
+            display: none;
+            z-index: 1;
+        }
+
+        @keyframes rotateSun {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body class="bg-light" id="pageBody">
+
+<!-- Clouds -->
+<div class="cloud" style="width:140px;height:70px;top:40px;left:-200px;"></div>
+<div class="cloud" style="width:200px;height:100px;top:110px;left:-300px;animation-duration:100s;"></div>
+
+<!-- Rain & Sun -->
+<div class="rain" id="rainEffect"></div>
+<div class="sun" id="sunEffect"></div>
+
+<div class="container">
+
+    <!-- Dark Mode Button -->
+    <div class="text-end mt-3">
+        <button class="btn btn-sm btn-secondary" onclick="toggleDarkMode()">
+            🌙 Toggle Dark Mode
+        </button>
+    </div>
+
+    <!-- Card -->
+    <div class="card card-custom p-4">
+        <h3 class="text-center text-success">🌱 AI Crop Recommendation</h3>
+
+        <p class="text-center fw-bold text-primary">
+            Model Accuracy: {{acc}}%
+        </p>
+
+        <!-- Form -->
+        <form method="post">
+            <input class="form-control mb-2" name="N" placeholder="Nitrogen (N)" required>
+            <input class="form-control mb-2" name="P" placeholder="Phosphorus (P)" required>
+            <input class="form-control mb-2" name="K" placeholder="Potassium (K)" required>
+            <input class="form-control mb-2" name="temperature" placeholder="Temperature (°C)" required>
+            <input class="form-control mb-2" name="humidity" placeholder="Humidity (%)" required>
+            <input class="form-control mb-2" name="ph" placeholder="Soil pH" required>
+            <input class="form-control mb-3" name="rainfall" placeholder="Rainfall (mm)" required>
+
+            <button class="btn btn-success w-100">Predict Crop</button>
+        </form>
+
+        <!-- Output -->
+        {% if result %}
+        <hr>
+
+        <h5 class="text-success text-center">
+            🌾 Recommended Crop: {{result}}
+        </h5>
+
+        <img class="crop-img"
+             src="{{ url_for('static', filename='images/' + result|lower + '.jpg') }}"
+             alt="{{result}} image">
+
+        <p class="text-center">
+            <b>🌱 Fertilizer:</b> {{fert}}
+        </p>
+
+        <h6 class="mt-3">📊 Probability Scores</h6>
+        <ul class="list-group">
+            {% for c,p in probs %}
+            <li class="list-group-item">
+                {{c}} : {{(p*100)|round(2)}}%
+            </li>
+            {% endfor %}
+        </ul>
+
+        <!-- Weather Logic -->
+        <script>
+            const crop = "{{result}}".toLowerCase();
+            const body = document.getElementById("pageBody");
+            const rain = document.getElementById("rainEffect");
+            const sun  = document.getElementById("sunEffect");
+
+            body.classList.remove("farm-bg","veg-bg","wet-bg");
+            rain.style.display = "none";
+            sun.style.display  = "none";
+
+            if (["rice","sugarcane"].includes(crop)) {
+                body.classList.add("wet-bg");
+                rain.style.display = "block";   // 🌧️ wet crops
+            }
+            else if (["tomato","onion","potato","brinjal","chilli"].includes(crop)) {
+                body.classList.add("veg-bg");
+            }
+            else {
+                body.classList.add("farm-bg");
+                sun.style.display = "block";    // ☀️ dry crops
+            }
+        </script>
+
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+}
+</script>
+
+</body>
+</html>
