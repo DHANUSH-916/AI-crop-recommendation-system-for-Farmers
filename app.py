@@ -1,6 +1,7 @@
 c:\Users\Dhanush\AppData\Local\Packages\5319275A.WhatsAppDesktop_cv1g1gvanyjgm\LocalState\sessions\44611EBB9CBFC0C3215606FCAA47AB2D84A7EA0E\transfers\2026-28\WhatsApp Image 2026-07-12 at 9.16.49 PM.jpeg
 from flask import Flask,render_template,request
-import pickle,pandas as pd
+import pickle
+import pandas as pd
 
 fertilizer={
 "Rice":"Urea, DAP",
