@@ -1,0 +1,194 @@
+/* ===========================
+   Large Screens
+=========================== */
+
+@media (max-width:1200px){
+
+.hero h1{
+font-size:44px;
+}
+
+}
+
+/* ===========================
+   Tablets
+=========================== */
+
+@media (max-width:992px){
+
+.navbar{
+padding:12px 0;
+}
+
+.hero{
+padding:120px 0 70px;
+text-align:center;
+}
+
+.hero h1{
+font-size:40px;
+}
+
+.hero p{
+font-size:17px;
+}
+
+.hero-image{
+margin-top:40px;
+max-width:80%;
+}
+
+.prediction-card{
+padding:30px;
+}
+
+.result-card h2{
+font-size:34px;
+}
+
+.crop-image{
+width:180px;
+}
+
+}
+
+/* ===========================
+   Mobile
+=========================== */
+
+@media (max-width:768px){
+
+.hero{
+padding-top:100px;
+}
+
+.hero h1{
+font-size:32px;
+line-height:1.4;
+}
+
+.hero p{
+font-size:16px;
+}
+
+.btn-lg{
+width:100%;
+margin-bottom:15px;
+}
+
+.feature-card{
+padding:25px;
+}
+
+.prediction-card{
+padding:25px;
+}
+
+.result-card{
+padding:25px;
+}
+
+.crop-image{
+width:150px;
+}
+
+.result-card h2{
+font-size:30px;
+}
+
+.navbar-brand{
+font-size:24px;
+}
+
+}
+
+/* ===========================
+   Small Mobile
+=========================== */
+
+@media (max-width:576px){
+
+.hero h1{
+font-size:28px;
+}
+
+.hero p{
+font-size:15px;
+}
+
+.prediction-card{
+padding:20px;
+}
+
+.feature-card{
+padding:20px;
+}
+
+.feature-card i{
+font-size:45px;
+}
+
+.feature-card h4{
+font-size:20px;
+}
+
+.form-control{
+height:50px;
+font-size:15px;
+}
+
+label{
+font-size:14px;
+}
+
+.btn-success{
+padding:12px 25px;
+font-size:16px;
+}
+
+.crop-image{
+width:130px;
+}
+
+.result-card h2{
+font-size:26px;
+}
+
+.accuracy{
+font-size:20px;
+}
+
+footer{
+padding:25px 10px;
+font-size:14px;
+}
+
+}
+
+/* ===========================
+   Extra Small Devices
+=========================== */
+
+@media (max-width:400px){
+
+.hero h1{
+font-size:24px;
+}
+
+.hero p{
+font-size:14px;
+}
+
+.navbar-brand{
+font-size:20px;
+}
+
+.crop-image{
+width:110px;
+}
+
+.result-card h2{
+font-size:22px;
+}
+
+}

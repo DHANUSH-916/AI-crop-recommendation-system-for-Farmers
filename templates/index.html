@@ -1,237 +1,787 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <title>AI Crop Recommendation</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-    <!-- Bootstrap CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>AI Crop Recommendation System</title>
 
-    <style>
-        body {
-            transition: background 0.3s, color 0.3s;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+    <meta name="description"
+        content="AI Powered Crop Recommendation System for Farmers">
 
-        /* Card */
-        .card-custom {
-            max-width: 450px;
-            margin: auto;
-            margin-top: 40px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.25);
-            border-radius: 10px;
-            position: relative;
-            z-index: 2;
-        }
+    <!-- Bootstrap -->
 
-        /* Dark Mode */
-        .dark-mode {
-            background: #121212 !important;
-            color: #ffffff;
-        }
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
 
-        .dark-mode .card {
-            background: #1e1e1e;
-            color: white;
-        }
+    <!-- Google Font -->
 
-        .dark-mode input,
-        .dark-mode .list-group-item {
-            background: #333;
-            color: white;
-            border: 1px solid #555;
-        }
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
-        /* Crop Image */
-        .crop-img {
-            display: block;
-            margin: 15px auto;
-            max-width: 220px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
+    <!-- Bootstrap Icons -->
 
-        /* Background Themes */
-        .farm-bg {
-            background: linear-gradient(to top, #fffde7, #ffeb3b);
-        }
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-        .veg-bg {
-            background: linear-gradient(to top, #fff3e0, #ffe0b2);
-        }
+    <!-- CSS -->
 
-        .wet-bg {
-            background: linear-gradient(to top, #90caf9, #e3f2fd);
-        }
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}">
 
-        /* ☁️ Clouds */
-        .cloud {
-            position: fixed;
-            background: #ffffff;
-            border-radius: 50%;
-            opacity: 0.9;
-            animation: moveClouds 80s linear infinite;
-            z-index: 1;
-        }
-        .cloud::before,
-        .cloud::after {
-            content: "";
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-        }
-        .cloud::before { width: 60%; height: 60%; top: -30%; left: 10%; }
-        .cloud::after { width: 70%; height: 70%; top: -40%; right: 10%; }
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/responsive.css') }}">
 
-        @keyframes moveClouds {
-            from { transform: translateX(-200px); }
-            to { transform: translateX(120vw); }
-        }
-
-        /* 🌧️ Rain */
-        .rain {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            background-image: repeating-linear-gradient(
-                to bottom,
-                rgba(255,255,255,0.6),
-                rgba(255,255,255,0.6) 2px,
-                transparent 4px,
-                transparent 10px
-            );
-            animation: rainFall 0.4s linear infinite;
-            display: none;
-            z-index: 1;
-        }
-
-        @keyframes rainFall {
-            from { background-position: 0 0; }
-            to { background-position: 0 120px; }
-        }
-
-        /* ☀️ Sun */
-        .sun {
-            position: fixed;
-            top: 60px;
-            right: 80px;
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(circle, #ffeb3b, #fbc02d);
-            border-radius: 50%;
-            box-shadow: 0 0 30px rgba(255,193,7,0.8);
-            animation: rotateSun 20s linear infinite;
-            display: none;
-            z-index: 1;
-        }
-
-        @keyframes rotateSun {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-    </style>
 </head>
 
-<body class="bg-light" id="pageBody">
+<body>
 
-<!-- Clouds -->
-<div class="cloud" style="width:140px;height:70px;top:40px;left:-200px;"></div>
-<div class="cloud" style="width:200px;height:100px;top:110px;left:-300px;animation-duration:100s;"></div>
+<!-- ================= NAVBAR ================= -->
 
-<!-- Rain & Sun -->
-<div class="rain" id="rainEffect"></div>
-<div class="sun" id="sunEffect"></div>
+<nav class="navbar navbar-expand-lg fixed-top shadow-sm">
 
-<div class="container">
+    <div class="container">
 
-    <!-- Dark Mode Button -->
-    <div class="text-end mt-3">
-        <button class="btn btn-sm btn-secondary" onclick="toggleDarkMode()">
-            🌙 Toggle Dark Mode
+        <a class="navbar-brand fw-bold"
+            href="#">
+
+            🌱 CropAI
+
+        </a>
+
+        <button class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav">
+
+            <span class="navbar-toggler-icon"></span>
+
         </button>
+
+        <div class="collapse navbar-collapse"
+            id="navbarNav">
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+
+                    <a class="nav-link active"
+                        href="#">
+
+                        Home
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item">
+
+                    <a class="nav-link"
+                        href="#features">
+
+                        Features
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item">
+
+                    <a class="nav-link"
+                        href="#predict">
+
+                        Predict
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item ms-3">
+
+                    <button
+                        class="btn btn-outline-light btn-sm"
+                        onclick="toggleDarkMode()">
+
+                        <i class="bi bi-moon-stars"></i>
+
+                    </button>
+
+                </li>
+
+            </ul>
+
+        </div>
+
     </div>
 
-    <!-- Card -->
-    <div class="card card-custom p-4">
-        <h3 class="text-center text-success">🌱 AI Crop Recommendation</h3>
+</nav>
 
-        <p class="text-center fw-bold text-primary">
-            Model Accuracy: {{acc}}%
-        </p>
+<!-- ================= HERO ================= -->
 
-        <!-- Form -->
-        <form method="post">
-            <input class="form-control mb-2" name="N" placeholder="Nitrogen (N)" required>
-            <input class="form-control mb-2" name="P" placeholder="Phosphorus (P)" required>
-            <input class="form-control mb-2" name="K" placeholder="Potassium (K)" required>
-            <input class="form-control mb-2" name="temperature" placeholder="Temperature (°C)" required>
-            <input class="form-control mb-2" name="humidity" placeholder="Humidity (%)" required>
-            <input class="form-control mb-2" name="ph" placeholder="Soil pH" required>
-            <input class="form-control mb-3" name="rainfall" placeholder="Rainfall (mm)" required>
+<section class="hero">
 
-            <button class="btn btn-success w-100">Predict Crop</button>
-        </form>
+    <div class="container">
 
-        <!-- Output -->
-        {% if result %}
-        <hr>
+        <div class="row align-items-center">
 
-        <h5 class="text-success text-center">
-            🌾 Recommended Crop: {{result}}
+            <div class="col-lg-6">
+
+                <span class="badge bg-success mb-3">
+
+                    AI Powered Agriculture
+
+                </span>
+
+                <h1>
+
+                    Grow Smarter with Artificial Intelligence
+
+                </h1>
+
+                <p>
+
+                    Predict the most suitable crop based on soil nutrients,
+                    weather conditions and machine learning.
+
+                </p>
+
+                <div class="mt-4">
+
+                    <a href="#predict"
+                        class="btn btn-success btn-lg me-3">
+
+                        Start Prediction
+
+                    </a>
+
+                    <a href="#features"
+                        class="btn btn-outline-success btn-lg">
+
+                        Learn More
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-6 text-center">
+
+                <img
+                    src="{{ url_for('static', filename='images/hero.png') }}"
+                    class="img-fluid hero-image"
+                    alt="Hero">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= FEATURES ================= -->
+
+<section id="features"
+    class="features">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <h2>
+
+                Why Choose CropAI?
+
+            </h2>
+
+            <p>
+
+                Artificial Intelligence helps farmers
+                make better crop decisions.
+
+            </p>
+
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+
+                <div class="feature-card">
+
+                    <i class="bi bi-cpu"></i>
+
+                    <h4>
+
+                        AI Prediction
+
+                    </h4>
+
+                    <p>
+
+                        Predicts the best crop
+                        using a trained Machine Learning model.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="feature-card">
+
+                    <i class="bi bi-droplet-half"></i>
+
+                    <h4>
+
+                        Soil Analysis
+
+                    </h4>
+
+                    <p>
+
+                        Uses NPK,
+                        Temperature,
+                        Humidity,
+                        pH and Rainfall.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="feature-card">
+
+                    <i class="bi bi-bar-chart-fill"></i>
+
+                    <h4>
+
+                        Confidence Score
+
+                    </h4>
+
+                    <p>
+
+                        Displays prediction probabilities
+                        with interactive charts.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+<!-- ================= PREDICTION ================= -->
+
+<section id="predict" class="prediction-section">
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-9">
+
+                <div class="prediction-card">
+
+                    <div class="text-center mb-4">
+
+                        <h2>🌾 Crop Recommendation</h2>
+
+                        <p>
+
+                            Model Accuracy
+
+                            <span class="accuracy">
+
+                                {{ acc }}%
+
+                            </span>
+
+                        </p>
+
+                    </div>
+
+                    <form method="POST">
+
+                        <div class="row">
+
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label">
+
+                                    Nitrogen (N)
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    name="N"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label">
+
+                                    Phosphorus (P)
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    name="P"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label">
+
+                                    Potassium (K)
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    name="K"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Temperature (°C)
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    class="form-control"
+                                    name="temperature"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Humidity (%)
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    class="form-control"
+                                    name="humidity"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Soil pH
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    class="form-control"
+                                    name="ph"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+
+                                <label class="form-label">
+
+                                    Rainfall (mm)
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    class="form-control"
+                                    name="rainfall"
+                                    required>
+
+                            </div>
+
+                        </div>
+
+                        <div class="text-center">
+
+                            <button
+                                class="btn btn-success btn-lg px-5">
+
+                                <i class="bi bi-search"></i>
+
+                                Predict Crop
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                    {% if result %}
+
+                    <hr class="my-5">
+
+                    <div class="result-card">
+
+                        <div class="text-center">
+
+                            <img
+                                class="crop-image"
+                                src="{{ url_for('static', filename='images/crops/' + result|lower + '.jpg') }}"
+                                alt="{{ result }}">
+
+                            <h2 class="mt-3">
+
+                                🌾 {{ result }}
+
+                            </h2>
+
+                            <span class="badge bg-success fs-6">
+
+                                Recommended Crop
+
+                            </span>
+
+                        </div>
+
+                        <div class="row mt-5">
+
+                            <div class="col-md-12 mb-4">
+
+                                <div class="info-box">
+
+                                    <h5>📖 Description</h5>
+
+                                    <p>{{ crop_info.description }}</p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+
+                                <div class="info-box">
+
+                                    <h5>🌱 Fertilizer</h5>
+
+                                    <p>{{ fert }}</p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+
+                                <div class="info-box">
+
+                                    <h5>🌡 Temperature</h5>
+
+                                    <p>{{ crop_info.temperature }}</p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+
+                                <div class="info-box">
+
+                                    <h5>💧 Water Requirement</h5>
+
+                                    <p>{{ crop_info.water }}</p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+
+                                <div class="info-box">
+
+                                    <h5>🌍 Soil Type</h5>
+
+                                    <p>{{ crop_info.soil }}</p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+
+                                <div class="info-box">
+
+                                    <h5>🌧 Rainfall</h5>
+
+                                    <p>{{ crop_info.rainfall }}</p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+
+                                <div class="info-box">
+
+                                    <h5>📅 Growing Season</h5>
+
+                                    <p>{{ crop_info.season }}</p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <hr class="my-5">
+
+                        <h4 class="text-center mb-4">
+
+                            📊 Prediction Confidence
+
+                        </h4>
+
+                        {% for c,p in probs %}
+
+                        <div class="mb-3">
+
+                            <div class="d-flex justify-content-between">
+
+                                <span>{{ c }}</span>
+
+                                <strong>{{ (p*100)|round(2) }}%</strong>
+
+                            </div>
+
+                            <div class="progress">
+
+                                <div
+                                    class="progress-bar bg-success"
+                                    style="width: {{ (p*100)|round(2) }}%;">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        {% endfor %}
+
+                        <div class="mt-5">
+
+                            <h4 class="text-center mb-4">
+
+                                📈 Prediction Confidence Chart
+
+                            </h4>
+
+                            <canvas id="predictionChart"></canvas>
+
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="py-4">
+
+    <div class="container text-center">
+
+        <h5 class="mb-3">
+
+            🌱 CropAI
+
         </h5>
 
-        <img class="crop-img"
-             src="{{ url_for('static', filename='images/' + result|lower + '.jpg') }}"
-             alt="{{result}} image">
+        <p class="mb-2">
 
-        <p class="text-center">
-            <b>🌱 Fertilizer:</b> {{fert}}
+            AI Powered Crop Recommendation System for Smart Farming
+
         </p>
 
-        <h6 class="mt-3">📊 Probability Scores</h6>
-        <ul class="list-group">
-            {% for c,p in probs %}
-            <li class="list-group-item">
-                {{c}} : {{(p*100)|round(2)}}%
-            </li>
-            {% endfor %}
-        </ul>
+        <p class="text-muted">
 
-        <!-- Weather Logic -->
-        <script>
-            const crop = "{{result}}".toLowerCase();
-            const body = document.getElementById("pageBody");
-            const rain = document.getElementById("rainEffect");
-            const sun  = document.getElementById("sunEffect");
+            Built using Flask • Python • Machine Learning
 
-            body.classList.remove("farm-bg","veg-bg","wet-bg");
-            rain.style.display = "none";
-            sun.style.display  = "none";
+        </p>
 
-            if (["rice","sugarcane"].includes(crop)) {
-                body.classList.add("wet-bg");
-                rain.style.display = "block";   // 🌧️ wet crops
-            }
-            else if (["tomato","onion","potato","brinjal","chilli"].includes(crop)) {
-                body.classList.add("veg-bg");
-            }
-            else {
-                body.classList.add("farm-bg");
-                sun.style.display = "block";    // ☀️ dry crops
-            }
-        </script>
+        <hr>
 
-        {% endif %}
+        <small>
+
+            © 2026 CropAI. All Rights Reserved.
+
+        </small>
+
     </div>
-</div>
+
+</footer>
+
+<!-- ================= SCRIPTS ================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+{% if probs %}
 
 <script>
-function toggleDarkMode() {
-    document.body.classList.toggle("dark-mode");
+
+const labels = [
+{% for c,p in probs[:5] %}
+"{{ c }}",
+{% endfor %}
+];
+
+const values = [
+{% for c,p in probs[:5] %}
+{{ (p*100)|round(2) }},
+{% endfor %}
+];
+
+const ctx = document.getElementById("predictionChart");
+
+if (ctx) {
+
+new Chart(ctx, {
+
+type: "bar",
+
+data: {
+
+labels: labels,
+
+datasets: [{
+
+label: "Confidence (%)",
+
+data: values,
+
+backgroundColor: [
+
+"#2E7D32",
+"#43A047",
+"#66BB6A",
+"#81C784",
+"#A5D6A7"
+
+],
+
+borderRadius: 8
+
+}]
+
+},
+
+options: {
+
+responsive: true,
+
+maintainAspectRatio: false,
+
+plugins: {
+
+legend: {
+
+display: false
+
+},
+
+tooltip: {
+
+callbacks: {
+
+label: function(context) {
+
+return context.raw + "%";
+
 }
+
+}
+
+}
+
+},
+
+scales: {
+
+y: {
+
+beginAtZero: true,
+
+max: 100,
+
+ticks: {
+
+callback: function(value){
+
+return value + "%";
+
+}
+
+}
+
+}
+
+}
+
+}
+
+});
+
+}
+
 </script>
 
+{% endif %}
+
 </body>
+
 </html>
